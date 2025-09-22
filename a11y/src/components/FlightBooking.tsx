@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import './FlightBooking.css';
 
@@ -7,14 +7,13 @@ const MAX_PASSENGERS = 3;
 const FlightBooking = () => {
   const [adultCount, setAdultCount] = useState(1);
   const [statusMessage, setStatusMessage] = useState('');
+  const messageKeyRef = useRef(0);
 
   const incrementCount = () => {
     setAdultCount((prev) => {
       if (prev === MAX_PASSENGERS) {
-        setStatusMessage('');
-        setTimeout(() => {
-          setStatusMessage('최대 승객 수에 도달했습니다');
-        }, 10);
+        messageKeyRef.current += 1;
+        setStatusMessage('최대 승객 수에 도달했습니다');
         return prev;
       }
       setStatusMessage('');
@@ -25,10 +24,8 @@ const FlightBooking = () => {
   const decrementCount = () => {
     setAdultCount((prev) => {
       if (prev <= 1) {
-        setStatusMessage('');
-        setTimeout(() => {
-          setStatusMessage('최소 1명의 승객이 필요합니다');
-        }, 10);
+        messageKeyRef.current += 1;
+        setStatusMessage('최소 1명의 승객이 필요합니다');
         return prev;
       }
       setStatusMessage('');
@@ -52,7 +49,7 @@ const FlightBooking = () => {
             +
           </button>
           {statusMessage && (
-            <div className="visually-hidden" role="alert">
+            <div key={messageKeyRef.current} className="visually-hidden" role="alert">
               {statusMessage}
             </div>
           )}
